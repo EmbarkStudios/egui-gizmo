@@ -1,5 +1,6 @@
 use std::f64::consts::TAU;
 
+use egui::epaint::PathStroke;
 use egui::layers::ShapeIdx;
 use egui::{Color32, Pos2, Rect, Shape, Stroke};
 use glam::{DMat4, DVec3};
@@ -49,7 +50,7 @@ impl Painter3d {
         radius: f64,
         start_angle: f64,
         end_angle: f64,
-        stroke: impl Into<Stroke>,
+        stroke: impl Into<PathStroke>,
     ) -> ShapeIdx {
         let mut points = self.arc_points(radius, start_angle, end_angle);
 
@@ -67,7 +68,7 @@ impl Painter3d {
         }
     }
 
-    pub fn circle(&self, radius: f64, stroke: impl Into<Stroke>) -> ShapeIdx {
+    pub fn circle(&self, radius: f64, stroke: impl Into<PathStroke>) -> ShapeIdx {
         self.arc(radius, 0.0, TAU, stroke)
     }
 
@@ -79,7 +80,7 @@ impl Painter3d {
             .add(Shape::convex_polygon(points, color, Stroke::NONE))
     }
 
-    pub fn line_segment(&self, from: DVec3, to: DVec3, stroke: impl Into<Stroke>) {
+    pub fn line_segment(&self, from: DVec3, to: DVec3, stroke: impl Into<PathStroke>) {
         let mut points: [Pos2; 2] = Default::default();
 
         for (i, point) in points.iter_mut().enumerate() {
@@ -109,7 +110,7 @@ impl Painter3d {
         }
     }
 
-    pub fn polygon(&self, points: &[DVec3], fill: impl Into<Color32>, stroke: impl Into<Stroke>) {
+    pub fn polygon(&self, points: &[DVec3], fill: impl Into<Color32>, stroke: impl Into<PathStroke>) {
         let points = points
             .iter()
             .filter_map(|pos| world_to_screen(self.viewport, self.mvp, *pos))
@@ -121,7 +122,7 @@ impl Painter3d {
         }
     }
 
-    pub fn polyline(&self, points: &[DVec3], stroke: impl Into<Stroke>) {
+    pub fn polyline(&self, points: &[DVec3], stroke: impl Into<PathStroke>) {
         let points = points
             .iter()
             .filter_map(|pos| world_to_screen(self.viewport, self.mvp, *pos))
